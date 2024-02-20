@@ -1,0 +1,9 @@
+transformers
+pytorch
+pandas
+numpy
+wandb
+huggingface_cli
+datasets
+accelerate
+deepspeed
