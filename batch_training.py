@@ -53,8 +53,6 @@ def main(args):
                                               cache_dir=args.model_path,
                                               token=hf_token,
                                               padding_side="left")
-    tokenizer.pad_token_id = 0
-
     def tokenize_function(examples):
         data = tokenizer(examples["text"], padding=True, truncation=True, max_length=512)
         data = {k: torch.tensor(v) for k, v in data.items()}
@@ -101,7 +99,7 @@ def main(args):
         loss = torch.nn.functional.cross_entropy(
             shift_logits.view(-1, vocab_size), shift_labels.view(-1), reduction='none')
         loss = loss.reshape(bs, -1)
-        mask = shift_labels.reshape(bs, -1) != -100
+        mask = shift_labels.reshape(bs, -1) != tokenizer.pad_token_id
         num_non_zeros = mask.sum(1)
         loss = (loss * mask).sum(1) / num_non_zeros
         gathered_loss = loss
